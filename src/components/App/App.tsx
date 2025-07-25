@@ -13,6 +13,7 @@ import { fetchMovies } from "../../services/movieService";
 import type { Movie } from "../../types/movie";
 
 import styles from "./App.module.css";
+import type { TMDBResponse } from "../../services/movieService";
 
 const App = () => {
   const [query, setQuery] = useState("");
@@ -20,7 +21,7 @@ const App = () => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery<TMDBResponse>({
     queryKey: ["movies", query, page],
     queryFn: () => fetchMovies(query, page),
     enabled: !!query,
