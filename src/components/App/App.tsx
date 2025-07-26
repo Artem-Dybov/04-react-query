@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Toaster, toast } from "react-hot-toast";
+import { useState } from "react";
+import { Toaster } from "react-hot-toast";
 import ReactPaginate from "react-paginate";
 import { useQuery } from "@tanstack/react-query";
 
@@ -11,9 +11,9 @@ import MovieModal from "../MovieModal/MovieModal";
 
 import { fetchMovies } from "../../services/movieService";
 import type { Movie } from "../../types/movie";
-import type { TMDBResponse } from "../../services/movieService";
 
 import styles from "./App.module.css";
+import type { TMDBResponse } from "../../services/movieService";
 
 const App = () => {
   const [query, setQuery] = useState("");
@@ -21,19 +21,12 @@ const App = () => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data, isLoading, isError, isSuccess } = useQuery<TMDBResponse>({
+  const { data, isLoading, isError } = useQuery<TMDBResponse>({
     queryKey: ["movies", query, page],
     queryFn: () => fetchMovies(query, page),
     enabled: !!query,
     placeholderData: (previousData) => previousData,
   });
-
-  
-  useEffect(() => {
-    if (isSuccess && data.results.length === 0) {
-      toast.error("No movies found for your request.");
-    }
-  }, [isSuccess, data]);
 
   const handleSearch = (newQuery: string) => {
     if (newQuery !== query) {
@@ -76,6 +69,9 @@ const App = () => {
 
       {isLoading && <Loader />}
       {isError && <ErrorMessage />}
+      {data && data.results.length === 0 && (
+        <p className={styles.text}>No movies found for your request.</p>
+      )}
 
       {data && data.results.length > 0 && (
         <MovieGrid movies={data.results} onSelect={handleSelectMovie} />
