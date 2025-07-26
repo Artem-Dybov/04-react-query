@@ -26,6 +26,7 @@ export const fetchMovies = async (
       },
     }
   );
+  console.log("Bearer token:", import.meta.env.VITE_TMDB_TOKEN);
 
   return response.data;
 };
